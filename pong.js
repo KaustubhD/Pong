@@ -32,6 +32,15 @@ class Ball extends Rect {
 	}
 }
 
+class Player extends Rect{
+  constructor(){
+    super(20, 100)
+    this.score = 0
+  }
+
+}
+
+
 class Pong {
 	constructor(canvas) {
 		this.canvas = canvas
@@ -42,7 +51,14 @@ class Pong {
 		this.ball.pos.x = 10
 		this.ball.pos.y = 10
 		this.ball.velocity.x = 100
-		this.ball.velocity.y = 100
+    this.ball.velocity.y = 100
+    
+    this.players = [new Player, new Player]
+
+    this.players[0].pos.x = 40
+    this.players[1].pos.x = this.canvas.width - 40
+    this.players.forEach(pl => pl.pos.y = this.canvas.height / 2)
+
 		let lastTime
 		let animationFrame
 		const callAnimate = mil => {
@@ -59,13 +75,15 @@ class Pong {
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
     
     this.drawRect(this.ball)
+
+    this.players.forEach(pl => this.drawRect(pl))
   }
   
   drawRect(rect){
     this.ctx.fillStyle = '#fff'
 		this.ctx.fillRect(
-			rect.pos.x,
-			rect.pos.y,
+			rect.left,
+			rect.top,
 			rect.size.x,
 			rect.size.y
 		)
