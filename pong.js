@@ -52,7 +52,24 @@ class Pong {
 			animationFrame = requestAnimationFrame(callAnimate)
 		}
 		callAnimate()
-	}
+  }
+
+  draw(){
+    this.ctx.fillStyle = '#000'
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
+    
+    this.drawRect(this.ball)
+  }
+  
+  drawRect(rect){
+    this.ctx.fillStyle = '#fff'
+		this.ctx.fillRect(
+			rect.pos.x,
+			rect.pos.y,
+			rect.size.x,
+			rect.size.y
+		)
+  }
 
 	update(diff) {
 		this.ball.pos.x += this.ball.velocity.x * diff
@@ -63,16 +80,7 @@ class Pong {
 		if (this.ball.top < 0 || this.ball.bottom > this.canvas.height)
 			this.ball.velocity.y *= -1
 
-		this.ctx.fillStyle = '#000'
-		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
-
-		this.ctx.fillStyle = '#fff'
-		this.ctx.fillRect(
-			this.ball.pos.x,
-			this.ball.pos.y,
-			this.ball.size.x,
-			this.ball.size.y
-		)
+		this.draw()
 	}
 }
 
