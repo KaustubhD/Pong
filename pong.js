@@ -2,7 +2,15 @@ class Vector {
 	constructor(x = 0, y = 0) {
 		this.x = x
 		this.y = y
-	}
+  }
+  get len(){
+    return Math.sqrt(this.x ** 2 + this.y ** 2)
+  }
+  set len(val){
+    const factor = val / this.len
+    this.x *= factor
+    this.y *= factor
+  }
 }
 
 class Rect {
@@ -101,6 +109,14 @@ class Pong {
     this.ball.velocity.y = 0
   }
 
+  start(){
+    if(this.ball.velocity.x == 0 && this.ball.velocity.y == 0){
+      this.ball.velocity.x = 250 * (Math.random() > 0.5 ? -1 : 1) // Determines the direction
+      this.ball.velocity.y = 250 * (Math.random() * 2 - 1) // Determines the magnitude
+      this.ball.velocity.len = 250
+    }
+  }
+
 	update(diff) {
 		this.ball.pos.x += this.ball.velocity.x * diff
 		this.ball.pos.y += this.ball.velocity.y * diff
@@ -129,4 +145,7 @@ const pong = new Pong(canvas)
 
 canvas.addEventListener('mousemove', ev => {
    pong.players[0].pos.y = ev.offsetY
+})
+canvas.addEventListener('click', ev => {
+  pong.start()
 })
