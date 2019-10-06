@@ -1,0 +1,5 @@
+*.swp
+*.swps
+
+# F**k DS Store
+.DS_Store
