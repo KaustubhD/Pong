@@ -48,6 +48,7 @@ class Player extends Rect{
 
 }
 
+let animationFrame
 
 class Pong {
 	constructor(canvas) {
@@ -63,7 +64,6 @@ class Pong {
     this.players.forEach(pl => pl.pos.y = this.canvas.height / 2)
 
 		let lastTime
-		let animationFrame
 		const callAnimate = mil => {
 			if (lastTime) this.update((mil - lastTime) / 1000)
 			lastTime = mil
@@ -72,6 +72,41 @@ class Pong {
 		}
     callAnimate()
     
+    const NUMBER_SIZE = 10
+    const NUMBER_WIDTH = 3     // Number is 3 blocks wide
+    const NUMBER_HEIGHT = 5    //  and 5 blocks long
+    this.numbers = [
+      '111101101101111',
+      '010010010010010',
+      '111001111100111',
+      '111001111001111',
+      '100101111001001',
+      '111100111001111',
+      '111100111101111',
+      '111001001001001',
+      '111101111101111',
+      '111101111001111',
+    ].map(num => {
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
+
+      canvas.width = NUMBER_SIZE * NUMBER_WIDTH
+      canvas.height = NUMBER_SIZE * NUMBER_HEIGHT
+      
+      ctx.fillStyle = '#fff'
+
+      num.split('').forEach((bit, i) => {
+        if(bit == 1){
+          ctx.fillRect((i % NUMBER_WIDTH) * NUMBER_SIZE,
+                       Math.floor(i / NUMBER_WIDTH) * NUMBER_SIZE,
+                       NUMBER_SIZE,
+                       NUMBER_SIZE)
+        }
+      })
+      return canvas
+    })
+
+
     this.reset()
   }
 
@@ -80,16 +115,21 @@ class Pong {
     *  X increases ➡️
     *  Y increases downwards ⬇️
     */
-    if(player.left < ball.right && player.right > ball.left && player.bottom > ball.top && player.top < ball.bottom)
+    if(player.left < ball.right && player.right > ball.left && player.bottom > ball.top && player.top < ball.bottom){
       ball.velocity.x *= -1
+      ball.velocity.len *= 1.05
+    }
   }
   draw(){
     this.ctx.fillStyle = '#000'
+    this.ctx.strokeStyle = '#fff'
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
     
     this.drawRect(this.ball)
 
     this.players.forEach(pl => this.drawRect(pl))
+
+    this.drawScore()
   }
   
   drawRect(rect){
@@ -101,6 +141,18 @@ class Pong {
 			rect.size.y
 		)
   }
+
+  drawScore(){
+    this.players.forEach((player, i) => {
+      const digits = String(player.score).split('')
+      const digitWidthWithPadding = this.numbers[0].width + 5
+      const leftOffset = ((i+1) * (this.canvas.width / 3)) - ((digits.length * digitWidthWithPadding) / 2)
+      digits.forEach((dig, index) =>{
+        this.ctx.drawImage(this.numbers[Number(dig)], leftOffset + (index * digitWidthWithPadding), 20)
+      })
+    })
+  }
+
   reset(){
     // Game will start on mouse click
     this.ball.pos.x = this.canvas.width / 2
@@ -111,8 +163,8 @@ class Pong {
 
   start(){
     if(this.ball.velocity.x == 0 && this.ball.velocity.y == 0){
-      this.ball.velocity.x = 250 * (Math.random() > 0.5 ? -1 : 1) // Determines the direction
-      this.ball.velocity.y = 250 * (Math.random() * 2 - 1) // Determines the magnitude
+      this.ball.velocity.x = 200 * (Math.random() > 0.5 ? -1 : 1) // Determines the direction
+      this.ball.velocity.y = 200 * (Math.random() * 2 - 1) // Determines the magnitude
       this.ball.velocity.len = 250
     }
   }
