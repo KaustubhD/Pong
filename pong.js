@@ -190,10 +190,11 @@ class Pong {
 }
 
 const canvas = document.getElementById('canvas')
+canvas.height = Math.min(document.body.clientHeight, 500)
+canvas.width = canvas.height * 3 / 2  // Aspect ratio 3:2  (width : height)
 
 const pong = new Pong(canvas)
 
-//callAnimate()
 
 canvas.addEventListener('mousemove', ev => {
    pong.players[0].pos.y = ev.offsetY
